@@ -18,7 +18,7 @@ export function BreakdownView({
 }) {
   const buckets = useQuery(api.breakdown.getBreakdownForTask, { taskId });
 
-  if (buckets === undefined) {
+  if (buckets == null) {
     return (
       <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-4 px-6">
         <Skeleton className="h-24 w-full rounded-lg" />

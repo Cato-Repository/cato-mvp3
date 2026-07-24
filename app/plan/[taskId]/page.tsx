@@ -32,7 +32,7 @@ export default function TaskPage({
   const generatingRef = useRef(false);
 
   const clarificationDone = task?.clarificationDone === true;
-  const hasBreakdown = buckets !== undefined && buckets.length > 0;
+  const hasBreakdown = buckets != null && buckets.length > 0;
 
   useEffect(() => {
     if (task === null) router.replace("/plan");
@@ -42,7 +42,7 @@ export default function TaskPage({
     if (
       clarificationDone &&
       task?.status === "not_started" &&
-      buckets !== undefined &&
+      buckets != null &&
       buckets.length === 0 &&
       !generatingRef.current
     ) {
