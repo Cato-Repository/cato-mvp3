@@ -9,20 +9,24 @@ import { Timer } from "@/components/session/Timer";
 import { CurrentStepLine } from "@/components/session/CurrentStepLine";
 import { PipHost } from "@/components/session/PipHost";
 import { notifyFocusStreak } from "@/lib/notifications";
-import { Pause, Play, Square } from "lucide-react";
+import { isPipSupported, openTimerPipWindow } from "@/lib/pip";
+import { Pause, PictureInPicture2, Play, Square } from "lucide-react";
 import type { Id } from "@/convex/_generated/dataModel";
 
 const FOCUS_STREAK_MS = 15 * 60 * 1000;
 
 export function SessionView({
   taskId,
-  pipWindow,
-  onPipClosed,
+  initialPipWindow,
 }: {
   taskId: Id<"tasks">;
-  pipWindow: Window | null;
-  onPipClosed: () => void;
+  initialPipWindow: Window | null;
 }) {
+  // Owned locally (seeded from the window opened by the "Start Session"
+  // click, if any) so a "Pop out timer" button can reopen it later from
+  // its own click — a later click is its own valid user gesture, so this
+  // doesn't need to go back through the page that started the session.
+  const [pipWindow, setPipWindow] = useState(initialPipWindow);
   const session = useQuery(api.sessions.getActiveSessionForTask, { taskId });
   const buckets = useQuery(api.breakdown.getBreakdownForTask, { taskId });
   const pauseSession = useMutation(api.sessions.pauseSession);
@@ -91,15 +95,26 @@ export function SessionView({
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-8 px-6">
-      <PipHost pipWindow={pipWindow} onPipClosed={onPipClosed}>
+      <PipHost pipWindow={pipWindow} onPipClosed={() => setPipWindow(null)}>
         <Timer bucketKind={currentBucket.kind} remainingMs={remainingMs} totalMs={totalMs} />
         <CurrentStepLine text={stepText} />
       </PipHost>
 
-      {pipWindow !== null && (
+      {pipWindow !== null ? (
         <p className="text-muted-foreground text-xs">
           Timer is running in the floating window.
         </p>
+      ) : (
+        isPipSupported() && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={async () => setPipWindow(await openTimerPipWindow())}
+          >
+            <PictureInPicture2 />
+            Pop out timer
+          </Button>
+        )
       )}
 
       <div className="flex items-center gap-2">

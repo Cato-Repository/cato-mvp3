@@ -83,7 +83,7 @@ export default function TaskPage({
         {!clarificationDone ? (
           <ClarificationChat taskId={id} />
         ) : activeSession != null ? (
-          <SessionView taskId={id} pipWindow={pipWindow} onPipClosed={() => setPipWindow(null)} />
+          <SessionView taskId={id} initialPipWindow={pipWindow} />
         ) : hasBreakdown ? (
           <BreakdownView taskId={id} onStartSession={handleStartSession} starting={starting} />
         ) : (
