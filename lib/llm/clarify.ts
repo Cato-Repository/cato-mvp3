@@ -1,4 +1,6 @@
+import { generateObject } from "ai";
 import { z } from "zod";
+import { vertex, GEMINI_MODEL } from "./vertex";
 
 const clarifyResultSchema = z.object({
   done: z.boolean(),
@@ -9,42 +11,38 @@ export type ClarifyResult = z.infer<typeof clarifyResultSchema>;
 
 export type ClarifyTurn = { role: "assistant" | "user"; content: string };
 
-const FALLBACK_QUESTIONS = [
-  "What does \"done\" look like for this task?",
-  "Roughly how much time do you realistically have for this today?",
-  "Is there a specific part of this you're most unsure how to start?",
-];
+// Hard safety cap independent of the model's own judgment — keeps the
+// clarification round from running away even if the LLM keeps asking.
+const MAX_QUESTIONS = 2;
 
-/**
- * Stub for the clarification LLM call. Real implementation (Vertex AI /
- * Gemini via `generateObject`) is deferred — this mimics the intended
- * behavior (ask up to 2 short follow-up questions, then signal done) with
- * a fixed question pool so the UI and Convex plumbing around it are fully
- * exercisable without live credentials. Swap the body of this function for
- * a real `generateObject` call when Vertex AI is wired up; the schema and
- * call signature are designed to stay the same.
- */
 export async function clarifyNextQuestion(
   taskTitle: string,
   priorTurns: ClarifyTurn[]
 ): Promise<ClarifyResult> {
-  await new Promise((resolve) => setTimeout(resolve, 400));
-
   const questionsAskedSoFar = priorTurns.filter((t) => t.role === "assistant").length;
-  const userHasAnswered = priorTurns.some((t) => t.role === "user");
-
-  if (questionsAskedSoFar === 0) {
-    return {
-      done: false,
-      question: `To help break down "${taskTitle}", ${FALLBACK_QUESTIONS[0].toLowerCase()}`,
-    };
+  if (questionsAskedSoFar >= MAX_QUESTIONS) {
+    return { done: true };
   }
 
-  if (questionsAskedSoFar === 1 && userHasAnswered) {
-    return { done: false, question: FALLBACK_QUESTIONS[1] };
-  }
+  const transcript =
+    priorTurns.length > 0
+      ? priorTurns.map((t) => `${t.role === "assistant" ? "You" : "User"}: ${t.content}`).join("\n")
+      : "(no messages yet)";
 
-  return { done: true };
+  const { object } = await generateObject({
+    model: vertex(GEMINI_MODEL),
+    schema: clarifyResultSchema,
+    prompt: `You are helping a user clarify a task before it gets broken down into a short focused work session.
+
+Task: "${taskTitle}"
+
+Conversation so far:
+${transcript}
+
+Decide whether you already have enough context to break this task down into concrete steps. If the task is still vague (e.g. you don't know what "done" looks like, what's already been done, or what part they're stuck on), ask ONE short, conversational follow-up question — under 20 words, not a form field. Otherwise, set done to true and omit the question. You will not be allowed to ask more than ${MAX_QUESTIONS} questions total, so don't hold back if you have a genuinely important one.`,
+  });
+
+  return object;
 }
 
 export { clarifyResultSchema };

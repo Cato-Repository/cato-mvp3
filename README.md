@@ -52,18 +52,25 @@ components for F1–F10 — but **not yet runnable**, for two reasons:
    ```
    Visit `http://localhost:3000`.
 
-## LLM calls are stubbed
+## LLM calls (Vertex AI / Gemini)
 
-`lib/llm/clarify.ts` and `lib/llm/breakdown.ts` return realistic, shape-correct
-mock responses instead of calling Vertex AI / Gemini, so the whole flow
-(clarification → breakdown → session) is exercisable without live
-credentials. When ready to wire up real Gemini calls (mirroring
-[Cato MVP 2](../Cato%20-%20MVP%202/lib/llm/decompose-task.ts)'s pattern),
-replace the body of each function with a `generateObject` call — the zod
-schemas and call signatures are already shaped for it. Vertex credentials
-would be set as **Convex** deployment env vars via `npx convex env set`
-(see the commented-out block in `.env.local.example`), since Convex actions
-run in Convex's own Node runtime, not Next.js.
+`lib/llm/clarify.ts` and `lib/llm/breakdown.ts` call Vertex AI's
+`gemini-2.5-flash` via `generateObject` (`lib/llm/vertex.ts` holds the
+shared client), mirroring [Cato MVP 2](../Cato%20-%20MVP%202/lib/llm/decompose-task.ts)'s
+pattern. This project reuses MVP2's `cato-webapp` GCP project and
+`cato-vertex-caller` service account. These four vars must be set as
+**Convex** deployment env vars (not `.env.local`/Vercel — Convex actions
+run in Convex's own Node runtime):
+```bash
+npx convex env set GOOGLE_VERTEX_PROJECT cato-webapp
+npx convex env set GOOGLE_VERTEX_LOCATION <same region MVP2 uses>
+npx convex env set GOOGLE_CLIENT_EMAIL cato-vertex-caller@cato-webapp.iam.gserviceaccount.com
+npx convex env set GOOGLE_PRIVATE_KEY "<service account private key>"
+```
+(Or set them via the Convex dashboard's Environment Variables page instead
+of the CLI — same place `CLERK_JWT_ISSUER_DOMAIN` was set.) Without these,
+the clarification and breakdown actions will fail at runtime with a Google
+auth error — there's no stub fallback anymore.
 
 ## Document Picture-in-Picture
 
