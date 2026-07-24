@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-display);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Calm muted teal/sage palette — deliberately its own hue family (~196
+   teal primary, ~150 sage accent), distinct from Cato MVP 2's indigo/violet
+   (~273.6), for a "quiet room" feel rather than a high-energy brand color. */
+:root {
+  --background: oklch(0.985 0.006 200);
+  --foreground: oklch(0.27 0.02 235);
+  --card: oklch(0.995 0.004 200);
+  --card-foreground: oklch(0.27 0.02 235);
+  --popover: oklch(0.995 0.004 200);
+  --popover-foreground: oklch(0.27 0.02 235);
+  --primary: oklch(0.52 0.07 196);
+  --primary-foreground: oklch(0.98 0.01 196);
+  --secondary: oklch(0.93 0.02 190);
+  --secondary-foreground: oklch(0.27 0.02 235);
+  --muted: oklch(0.95 0.012 190);
+  --muted-foreground: oklch(0.48 0.02 220);
+  --accent: oklch(0.88 0.035 150);
+  --accent-foreground: oklch(0.25 0.03 150);
+  --destructive: oklch(0.55 0.16 25);
+  --border: oklch(0.9 0.01 200);
+  --input: oklch(0.9 0.01 200);
+  --ring: oklch(0.58 0.07 196);
+  --chart-1: oklch(0.6 0.08 196);
+  --chart-2: oklch(0.65 0.07 150);
+  --chart-3: oklch(0.55 0.05 235);
+  --chart-4: oklch(0.7 0.06 90);
+  --chart-5: oklch(0.5 0.09 25);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.97 0.008 200);
+  --sidebar-foreground: oklch(0.27 0.02 235);
+  --sidebar-primary: oklch(0.52 0.07 196);
+  --sidebar-primary-foreground: oklch(0.98 0.01 196);
+  --sidebar-accent: oklch(0.93 0.02 190);
+  --sidebar-accent-foreground: oklch(0.27 0.02 235);
+  --sidebar-border: oklch(0.9 0.01 200);
+  --sidebar-ring: oklch(0.58 0.07 196);
+}
+
+.dark {
+  --background: oklch(0.19 0.015 235);
+  --foreground: oklch(0.92 0.01 190);
+  --card: oklch(0.23 0.015 235);
+  --card-foreground: oklch(0.92 0.01 190);
+  --popover: oklch(0.23 0.015 235);
+  --popover-foreground: oklch(0.92 0.01 190);
+  --primary: oklch(0.68 0.08 196);
+  --primary-foreground: oklch(0.15 0.01 196);
+  --secondary: oklch(0.28 0.015 220);
+  --secondary-foreground: oklch(0.92 0.01 190);
+  --muted: oklch(0.27 0.012 220);
+  --muted-foreground: oklch(0.65 0.015 210);
+  --accent: oklch(0.32 0.04 150);
+  --accent-foreground: oklch(0.92 0.02 150);
+  --destructive: oklch(0.62 0.15 25);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.68 0.08 196);
+  --chart-1: oklch(0.68 0.08 196);
+  --chart-2: oklch(0.7 0.07 150);
+  --chart-3: oklch(0.65 0.05 235);
+  --chart-4: oklch(0.75 0.06 90);
+  --chart-5: oklch(0.6 0.09 25);
+  --sidebar: oklch(0.21 0.015 235);
+  --sidebar-foreground: oklch(0.92 0.01 190);
+  --sidebar-primary: oklch(0.68 0.08 196);
+  --sidebar-primary-foreground: oklch(0.15 0.01 196);
+  --sidebar-accent: oklch(0.28 0.015 220);
+  --sidebar-accent-foreground: oklch(0.92 0.01 190);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.68 0.08 196);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
