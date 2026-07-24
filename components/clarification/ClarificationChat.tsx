@@ -41,7 +41,7 @@ export function ClarificationChat({ taskId }: { taskId: Id<"tasks"> }) {
   const awaitingAnswer = lastTurn?.role === "assistant" && !isThinking;
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-4 px-6">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
         {turns?.map((turn) => (
           <ClarificationTurn key={turn._id} role={turn.role} content={turn.content} />

@@ -80,19 +80,23 @@ export default function TaskPage({
         <span className="font-display truncate text-sm font-medium">{task.title}</span>
       </header>
       <main className="flex min-h-0 flex-1 flex-col">
-        {!clarificationDone ? (
-          <ClarificationChat taskId={id} />
-        ) : activeSession != null ? (
+        {activeSession != null ? (
           <SessionView taskId={id} initialPipWindow={pipWindow} />
-        ) : hasBreakdown ? (
-          <BreakdownView taskId={id} onStartSession={handleStartSession} starting={starting} />
         ) : (
-          <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-4 px-6">
-            <p className="text-muted-foreground text-center text-sm">
-              Breaking this down into small steps...
-            </p>
-            <Skeleton className="h-24 w-full rounded-lg" />
-            <Skeleton className="h-24 w-full rounded-lg" />
+          <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-4 px-6 py-12">
+            {!clarificationDone ? (
+              <ClarificationChat taskId={id} />
+            ) : hasBreakdown ? (
+              <BreakdownView taskId={id} onStartSession={handleStartSession} starting={starting} />
+            ) : (
+              <>
+                <p className="text-muted-foreground text-center text-sm">
+                  Breaking this down into small steps...
+                </p>
+                <Skeleton className="h-24 w-full rounded-lg" />
+                <Skeleton className="h-24 w-full rounded-lg" />
+              </>
+            )}
           </div>
         )}
       </main>

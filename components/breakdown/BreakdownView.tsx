@@ -20,7 +20,7 @@ export function BreakdownView({
 
   if (buckets == null) {
     return (
-      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-4 px-6">
+      <div className="flex flex-col gap-4">
         <Skeleton className="h-24 w-full rounded-lg" />
         <Skeleton className="h-24 w-full rounded-lg" />
         <Skeleton className="h-24 w-full rounded-lg" />
@@ -29,7 +29,7 @@ export function BreakdownView({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-4 px-6 py-12">
+    <div className="flex flex-col gap-4">
       {buckets.map((bucket) => (
         <BucketSection
           key={bucket._id}

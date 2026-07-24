@@ -6,9 +6,12 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TaskCard } from "@/components/tasks/TaskCard";
+import { TaskWorkspace } from "@/components/tasks/TaskWorkspace";
+import type { Id } from "@/convex/_generated/dataModel";
 
 export function TaskEntryPanel({ date }: { date: string }) {
   const [title, setTitle] = useState("");
+  const [expandedTaskId, setExpandedTaskId] = useState<Id<"tasks"> | null>(null);
   const tasks = useQuery(api.tasks.getTasksForDate, { date });
   const createTask = useMutation(api.tasks.createTask);
 
@@ -52,7 +55,22 @@ export function TaskEntryPanel({ date }: { date: string }) {
             No tasks yet — add your first one above.
           </p>
         )}
-        {tasks?.map((task) => <TaskCard key={task._id} task={task} />)}
+        {tasks?.map((task) => (
+          <div key={task._id} className="flex flex-col gap-2">
+            <TaskCard
+              task={task}
+              expanded={expandedTaskId === task._id}
+              onToggle={() =>
+                setExpandedTaskId(expandedTaskId === task._id ? null : task._id)
+              }
+            />
+            {expandedTaskId === task._id && (
+              <div className="bg-muted/20 rounded-lg border p-4">
+                <TaskWorkspace taskId={task._id} />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
